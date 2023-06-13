@@ -1,0 +1,19 @@
+@import url("https://use.typekit.net/pui6lkf.css");
+@import url('https://fonts.cdnfonts.com/css/itc-korinna-std');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  font-size: 16px;
+}
