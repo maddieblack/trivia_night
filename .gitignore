@@ -18,33 +18,19 @@
 !/api/log/.keep
 !/api/tmp/.keep
 
-# Ignore pidfiles, but keep the directory.
-/api/tmp/pids/*
-!/api/tmp/pids/
-!/api/tmp/pids/.keep
-
-# Ignore uploaded files in development.
-/api/storage/*
-!/api/storage/.keep
-.byebug_history
-
-# Ignore master key for decrypting credentials and more.
-/api/config/master.key
 
 # dependencies
-/client/node_modules
-/client/.pnp
-.pnp.js
+node_modules
 
 # testing
-/client/coverage
+/coverage
 
 # next.js
-/client/.next/
-/client/out/
+.next/
+/out/
 
 # production
-/client/build
+/build
 
 # misc
 .DS_Store
@@ -57,6 +43,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env.local
 .env.development.local
 .env.test.local

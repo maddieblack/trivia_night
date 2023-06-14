@@ -1,0 +1,31 @@
+{
+  "name": "trivia_night",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "server": "nodemon server/app.js"
+  },
+  "dependencies": {
+    "autoprefixer": "10.4.14",
+    "dotenv": "^16.1.4",
+    "eslint": "8.42.0",
+    "eslint-config-next": "13.4.5",
+    "express": "^4.18.2",
+    "next": "13.4.5",
+    "postcss": "8.4.24",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "socket.io": "^4.6.2",
+    "socket.io-client": "^4.6.2",
+    "tailwindcss": "3.3.2"
+  },
+  "devDependencies": {
+    "@prettier/plugin-ruby": "^3.2.2",
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.8"
+  }
+}
