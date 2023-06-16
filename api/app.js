@@ -16,15 +16,22 @@ const io = new Server(server, {
 
 app.use(bodyParser.json());
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-
 io.on("connection", (socket) => {
   socket.onAny((event, ...args) => {
-    console.log(`got ${event}`);
+    const rooms = io.of("/").adapter.rooms;
+    const sids = io.of("/").adapter.sids;
+    console.log({ rooms, sids, args });
+  });
+
+  socket.on("NEW_GAME", (args) => {
+    const roomName = "TEST1234";
+    socket.join(roomName);
   });
 });
+
+io.of("/").adapter.on("create-room", (room) =>
+  console.log(`room ${room} was created`)
+);
 
 server.listen(port, () => {
   console.log(`Running on port ${port}`);
