@@ -2,6 +2,12 @@ import express from "express";
 import bodyParser from "body-parser";
 import http from "http";
 import { Server } from "socket.io";
+import mongoose from "mongoose";
+import handlers from "./handlers/index.js";
+import dotenv from "dotenv";
+import { registerHandlers } from "./utils/registerHandlers.js";
+
+dotenv.config();
 
 const app = express();
 const port = 3001;
@@ -16,17 +22,17 @@ const io = new Server(server, {
 
 app.use(bodyParser.json());
 
-io.on("connection", (socket) => {
-  socket.onAny((event, ...args) => {
-    const rooms = io.of("/").adapter.rooms;
-    const sids = io.of("/").adapter.sids;
-    console.log({ rooms, sids, args });
-  });
+mongoose.connect(process.env.DB);
 
-  socket.on("NEW_GAME", (args) => {
-    const roomName = "TEST1234";
-    socket.join(roomName);
-  });
+const db = mongoose.connection;
+
+db.on("error", console.error.bind(console, "MongoDB connection error: "));
+db.once("open", function () {
+  console.log("MongoDB connected successfully");
+});
+
+io.on("connection", (socket) => {
+  registerHandlers(handlers, socket, io);
 });
 
 io.of("/").adapter.on("create-room", (room) =>
