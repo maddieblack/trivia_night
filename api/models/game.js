@@ -6,9 +6,9 @@ const GameSchema = new mongoose.Schema({
     required: true,
   },
   players: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-    },
+    // {
+    //   type: mongoose.Schema.Types.ObjectId,
+    // },
   ],
   alex_trebek: {
     type: String,

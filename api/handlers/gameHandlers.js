@@ -21,4 +21,9 @@ export default {
       return console.log(error);
     }
   },
+
+  "game:select_alex": async (payload, socket) => {
+    // TODO: update game
+    // TODO: update player
+  },
 };

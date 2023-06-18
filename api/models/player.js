@@ -11,10 +11,11 @@ const PlayerSchema = new mongoose.Schema({
     default: 0,
     required: true,
   },
-  is_alex_trebek: {
-    type: Boolean,
-    default: false,
+  role: {
+    type: String,
+    enum: ["player", "alex_trebek"],
     required: true,
+    default: "player",
   },
 });
 
