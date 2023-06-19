@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useState } from "react";
-export const GameContext = createContext({ game: {}, setGame: null });
+export const GameContext = createContext({ game: {}, updatedGame: null });
 
 export const GameProvider = ({ children }) => {
   const [game, updateGame] = useState({});

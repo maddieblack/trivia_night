@@ -1,12 +1,12 @@
 "use client";
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { GameContext } from "@/context/GameProvider";
 import { useRouter } from "next/navigation";
 import isEmpty from "lodash/isEmpty";
 import { Button } from "@/components/Button";
 import { RadioButtonGroup } from "@/components/RadioButton";
 import { useRadioButtonGroup } from "@/components/RadioButton/useRadioButtonGroup";
-import { socket } from "@/services/socket";
+import { useSocketListener } from "@/components/hooks/useSocketListener";
 
 export const GameHome = () => {
   const { game, updateGame } = useContext(GameContext);
@@ -19,19 +19,16 @@ export const GameHome = () => {
     router.push("/");
   }
 
-  useEffect(() => {
-    socket.on("player:create:success", (payload) => updateGame(payload));
-
-    socket.on("game:create:success", (payload) => {
-      updateGame(payload);
-      router.push("/game");
-    });
-
-    return () => {
-      socket.off("player:create:success");
-      socket.off("game:create:success");
-    };
-  }, []);
+  useSocketListener("player:create:success", (payload) =>
+    updateGame(payload.game)
+  );
+  useSocketListener("player:delete:success", (payload) => {
+    updateGame(payload);
+  });
+  useSocketListener("game:create:success", (payload) => {
+    updateGame(payload);
+    router.push("/game");
+  });
 
   return (
     <div className="flex flex-col items-center h-screen ">
@@ -58,6 +55,14 @@ export const GameHome = () => {
           changeJudge(value);
         }}
       />
+      <div className="mt-10">
+        {game.players?.length > 2 && !judgeValue && (
+          <p className="mt-10 text-amber-400 text-3xl font-korinna">
+            Please select a player to be the host!
+          </p>
+        )}
+        {game.players?.length > 2 && judgeValue && <Button>Start game!</Button>}
+      </div>
     </div>
   );
 };

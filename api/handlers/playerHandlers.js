@@ -1,34 +1,29 @@
-import { Player } from "../models/player.js";
-import { Game } from "../models/game.js";
+import Queries from "../queries/index.js";
 
 export default {
   "player:create": async (payload, socket, io) => {
-    const { room_code, name } = payload;
-
-    socket.join(room_code);
-
-    const game = await Game.findOne({ room_code });
-
-    const player = new Player({
-      room_code,
-      name,
-      game_id: game._id,
-    });
-
+    const { room_code } = payload;
     try {
-      const new_player = await player.save();
-      await Game.findOneAndUpdate(
-        { _id: game._id },
-        { players: [...game.players, new_player._id] }
-      );
+      const response = await Queries.newPlayer(payload);
 
-      const new_game = await Game.findById(game._id)
-        .populate({ path: "players", model: "Player" })
-        .exec();
-
-      io.to(room_code).emit("player:create:success", new_game);
+      socket.join(room_code);
+      io.to(room_code).emit("player:create:success", response);
     } catch (error) {
       return console.log("Error", error);
+    }
+  },
+
+  "player:delete": async ({ _id, room_code }, socket, io) => {
+    try {
+      await Queries.deletePlayer(_id);
+
+      const game = await Queries.getGameByRoomCode(room_code);
+
+      socket.leave(room_code);
+
+      io.to(room_code).emit("player:delete:success", game);
+    } catch (err) {
+      console.log(err);
     }
   },
 };

@@ -1,28 +1,17 @@
-import { generate } from "randomstring";
-import { Game } from "../models/game.js";
+import Queries from "../queries/index.js";
 
 export default {
   "game:create": async (payload, socket) => {
-    const room_code = generate({ length: 5 }).toUpperCase();
-
-    socket.join(room_code);
-
-    const game = new Game({
-      room_code,
-      players: [],
-      alex_trebek: null,
-      questions: null,
-    });
-
     try {
-      const new_game = await game.save();
+      const new_game = await Queries.newGame();
+      socket.join(new_game.room_code);
       socket.emit("game:create:success", new_game);
     } catch (error) {
       return console.log(error);
     }
   },
 
-  "game:select_alex": async (payload, socket) => {
+  "game:start": async (payload, socket) => {
     // TODO: update game
     // TODO: update player
   },
