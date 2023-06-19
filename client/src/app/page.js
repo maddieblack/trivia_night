@@ -1,21 +1,22 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
-import { socket } from "@/services/socket";
+import { useContext } from "react";
 import { Button } from "@/components/Button";
 import { GameContext } from "@/context/GameProvider";
+import { useSocketListener } from "@/components/hooks/useSocketListener";
+import { useSocketEvent } from "@/components/hooks/useSocketEvent";
 
 export const HomePage = () => {
   const { updateGame } = useContext(GameContext);
   const router = useRouter();
 
-  useEffect(() => {
-    socket.on("game:create:success", (payload) => {
-      updateGame(payload);
-      router.push("/game");
-    });
-  }, []);
+  useSocketListener("game:create:success", (payload) => {
+    updateGame(payload);
+    router.push("/game");
+  });
+
+  const createGame = useSocketEvent("game:create");
 
   return (
     <div className="flex flex-col items-center justify-center h-screen gap-4">
@@ -25,9 +26,9 @@ export const HomePage = () => {
       <div className="flex flex-col items-center gap-5">
         <Button
           className="bg-amber-400 hidden md:block"
-          onClick={() => socket.emit("game:create")}
+          onClick={() => createGame()}
         >
-          START GAME
+          NEW GAME
         </Button>
         <Button className="bg-amber-400" onClick={() => router.push("/player")}>
           JOIN GAME
