@@ -12,6 +12,22 @@ export default {
   },
 
   "game:start": async (payload, socket) => {
+    const jeopardyBoard = await Queries.fetchBoardQuestions();
+    const doubleJeopardyBoard = await Queries.fetchBoardQuestions(true);
+    const finalJeopardyBoard = await Queries.fetchFinalJeopardy();
+
+    const updatedGame = {
+      ...payload,
+      questions: {
+        jeopardy: jeopardyBoard,
+        double_jeopardy: doubleJeopardyBoard,
+        final_jeopardy: finalJeopardyBoard,
+      },
+    };
+
+    await Queries.updateGame(updatedGame);
+
+    socket.emit("game:start:success", updatedGame);
     // TODO: update game
     // TODO: update player
   },

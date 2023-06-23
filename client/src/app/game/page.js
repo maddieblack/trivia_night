@@ -7,6 +7,7 @@ import { Button } from "@/components/Button";
 import { RadioButtonGroup } from "@/components/RadioButton";
 import { useRadioButtonGroup } from "@/components/RadioButton/useRadioButtonGroup";
 import { useSocketListener } from "@/components/hooks/useSocketListener";
+import { useSocketEvent } from "@/components/hooks/useSocketEvent";
 
 export const GameHome = () => {
   const { game, updateGame } = useContext(GameContext);
@@ -29,6 +30,11 @@ export const GameHome = () => {
     updateGame(payload);
     router.push("/game");
   });
+  useSocketListener("game:start:success", (payload) => {
+    console.log({ payload });
+  });
+
+  const startGame = useSocketEvent("game:start");
 
   return (
     <div className="flex flex-col items-center h-screen ">
@@ -51,7 +57,6 @@ export const GameHome = () => {
         value={judgeValue}
         options={game.players.map((p) => ({ label: p.name, value: p.name }))}
         onChange={(value) => {
-          console.log("running", value);
           changeJudge(value);
         }}
       />
@@ -61,7 +66,9 @@ export const GameHome = () => {
             Please select a player to be the host!
           </p>
         )}
-        {game.players?.length > 2 && judgeValue && <Button>Start game!</Button>}
+        {game.players?.length > 2 && judgeValue && (
+          <Button onClick={() => startGame(game)}>Start game!</Button>
+        )}
       </div>
     </div>
   );

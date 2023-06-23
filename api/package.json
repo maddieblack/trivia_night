@@ -15,6 +15,8 @@
     "axios": "^1.4.0",
     "dotenv": "^16.1.4",
     "express": "^4.18.2",
+    "jservice-node": "^0.2.3",
+    "lodash": "^4.17.21",
     "mongodb": "^5.6.0",
     "mongoose": "^7.3.0",
     "randomstring": "^1.3.0",

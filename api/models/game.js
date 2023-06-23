@@ -17,10 +17,11 @@ const GameSchema = new mongoose.Schema({
   questions: {
     jeopardy: [{ type: Object }],
     double_jeopardy: [{ type: Object }],
-    final_jeopardy: {
-      type: Object,
-      default: {},
-    },
+    final_jeopardy: [
+      {
+        type: Object,
+      },
+    ],
   },
 });
 
