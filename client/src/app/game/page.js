@@ -36,6 +36,8 @@ export const GameHome = () => {
 
   const startGame = useSocketEvent("game:start");
 
+  console.log({ game });
+
   return (
     <div className="flex flex-col items-center h-screen ">
       <Button
@@ -55,10 +57,8 @@ export const GameHome = () => {
       </h2>
       <RadioButtonGroup
         value={judgeValue}
-        options={game.players.map((p) => ({ label: p.name, value: p.name }))}
-        onChange={(value) => {
-          changeJudge(value);
-        }}
+        options={game.players.map((p) => ({ label: p.name, value: p._id }))}
+        onChange={changeJudge}
       />
       <div className="mt-10">
         {game.players?.length > 2 && !judgeValue && (
@@ -67,7 +67,11 @@ export const GameHome = () => {
           </p>
         )}
         {game.players?.length > 2 && judgeValue && (
-          <Button onClick={() => startGame(game)}>Start game!</Button>
+          <Button
+            onClick={() => startGame({ ...game, alex_trebek: judgeValue })}
+          >
+            Start game!
+          </Button>
         )}
       </div>
     </div>

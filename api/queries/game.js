@@ -17,13 +17,16 @@ export default {
     return await game.save();
   },
   updateGame: async (game) => {
-    console.log("UPDATE", game);
     const updatedGame = await Game.findOneAndUpdate(
       { _id: game._id },
       { ...game }
     );
 
     return updatedGame;
+  },
+  getGameByRoomCode: async (room_code) => {
+    const game_by_room_code = await Game.findOne({ room_code });
+    return game_by_room_code;
   },
   fetchBoardQuestions: async (is_double_jeopardy = false) => {
     const response = await axios.get(`https://jservice.io/api/random?count=6`);

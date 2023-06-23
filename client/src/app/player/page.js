@@ -39,10 +39,15 @@ const Player = () => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center pt-28 ">
-      <Button className="absolute top-4 left-4" onClick={() => handleLeave()}>
-        Back
-      </Button>
+    <div className="w-full flex flex-col items-center p-6">
+      <div className="w-full flex justify-between items-center">
+        <Button onClick={() => handleLeave()}>Back</Button>
+        {saved === true && (
+          <div className="text-white font-korinna text-3xl">
+            <span className="text-amber-400">Room:</span> {room_code}
+          </div>
+        )}
+      </div>
       <h1 className="text-white font-korinna text-5xl md:text-7xl p-12 text-center">
         {saved === true
           ? `Hold tight, ${name}, other players are still joining the game.`

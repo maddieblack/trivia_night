@@ -26,6 +26,10 @@ export default {
     };
 
     await Queries.updateGame(updatedGame);
+    await Queries.updatePlayer({
+      _id: payload.alex_trebek,
+      role: "alex_trebek",
+    });
 
     socket.emit("game:start:success", updatedGame);
     // TODO: update game

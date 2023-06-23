@@ -25,6 +25,15 @@ export default {
     };
   },
 
+  updatePlayer: async (player) => {
+    const updated_player = await Player.findOneAndUpdate(
+      { _id: player._id },
+      player
+    );
+
+    return updated_player;
+  },
+
   deletePlayer: async (_id) => {
     const game = await Game.findOne().where("players").in(_id);
 
