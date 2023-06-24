@@ -13,7 +13,7 @@ const PlayerSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["player", "alex_trebek"],
+    enum: ["player", "alex_trebek", "board"],
     required: true,
     default: "player",
   },

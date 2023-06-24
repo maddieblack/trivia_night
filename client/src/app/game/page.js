@@ -10,7 +10,7 @@ import { useSocketListener } from "@/components/hooks/useSocketListener";
 import { useSocketEvent } from "@/components/hooks/useSocketEvent";
 
 export const GameHome = () => {
-  const { game, updateGame } = useContext(GameContext);
+  const { game } = useContext(GameContext);
   const router = useRouter();
 
   const { value: judgeValue, changeValue: changeJudge } =
@@ -20,23 +20,11 @@ export const GameHome = () => {
     router.push("/");
   }
 
-  useSocketListener("player:create:success", (payload) =>
-    updateGame(payload.game)
-  );
-  useSocketListener("player:delete:success", (payload) => {
-    updateGame(payload);
-  });
-  useSocketListener("game:create:success", (payload) => {
-    updateGame(payload);
-    router.push("/game");
-  });
-  useSocketListener("game:start:success", (payload) => {
-    console.log({ payload });
-  });
-
   const startGame = useSocketEvent("game:start");
 
-  console.log({ game });
+  useSocketListener("game:start:success", (payload) => {
+    router.push(`/game/${payload.room_code}`);
+  });
 
   return (
     <div className="flex flex-col items-center h-screen ">
@@ -57,7 +45,9 @@ export const GameHome = () => {
       </h2>
       <RadioButtonGroup
         value={judgeValue}
-        options={game.players.map((p) => ({ label: p.name, value: p._id }))}
+        options={game.players
+          .filter((p) => p.role !== "board")
+          .map((p) => ({ label: p.name, value: p._id }))}
         onChange={changeJudge}
       />
       <div className="mt-10">

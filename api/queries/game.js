@@ -17,16 +17,19 @@ export default {
     return await game.save();
   },
   updateGame: async (game) => {
-    const updatedGame = await Game.findOneAndUpdate(
-      { _id: game._id },
-      { ...game }
-    );
-
-    return updatedGame;
+    return await Game.findOneAndUpdate({ _id: game._id }, { ...game })
+      .populate({ path: "players", model: "Player" })
+      .exec();
+  },
+  getGame: async (_id) => {
+    return await Game.findOne({ _id })
+      .populate({ path: "players", model: "Player" })
+      .exec();
   },
   getGameByRoomCode: async (room_code) => {
-    const game_by_room_code = await Game.findOne({ room_code });
-    return game_by_room_code;
+    return await Game.findOne({ room_code })
+      .populate({ path: "players", model: "Player" })
+      .exec();
   },
   fetchBoardQuestions: async (is_double_jeopardy = false) => {
     const response = await axios.get(`https://jservice.io/api/random?count=6`);

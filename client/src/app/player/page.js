@@ -7,7 +7,6 @@ import { useContext, useState } from "react";
 import { useSocketListener } from "@/components/hooks/useSocketListener";
 import { useSocketEvent } from "@/components/hooks/useSocketEvent";
 import { PlayerContext } from "@/context/PlayerProvider";
-import { GameContext } from "@/context/GameProvider";
 
 const Player = () => {
   const [room_code, changeRoomCode] = useState("");
@@ -15,13 +14,15 @@ const Player = () => {
   const [saved, changeSaved] = useState(false);
   const router = useRouter();
 
-  const { player, updatePlayer } = useContext(PlayerContext);
-  const { updateGame } = useContext(GameContext);
+  const { player } = useContext(PlayerContext);
 
-  useSocketListener("player:create:success", (payload) => {
-    updatePlayer(payload.player);
-    updateGame(payload.game);
+  useSocketListener("player:create:success", () => {
     changeSaved(true);
+  });
+
+  useSocketListener("game:start:success", (payload) => {
+    console.log("GAME START");
+    router.push(`/game/${payload.room_code}`);
   });
 
   const createPlayer = useSocketEvent("player:create");
@@ -53,7 +54,7 @@ const Player = () => {
           ? `Hold tight, ${name}, other players are still joining the game.`
           : "Join game"}
       </h1>
-
+      {player.role === "alex_trebek" && <div>I AM JUDGE</div>}
       <div className="flex flex-col items-center gap-4 mt-4">
         {saved === false && (
           <>

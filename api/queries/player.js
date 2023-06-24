@@ -2,26 +2,26 @@ import { Game } from "../models/game.js";
 import { Player } from "../models/player.js";
 
 export default {
-  newPlayer: async ({ room_code, name }) => {
-    const game = await Game.findOne({ room_code });
+  newPlayer: async (new_player) => {
+    const game = await Game.findOne({ room_code: new_player.room_code });
 
-    const player = new Player({
-      room_code,
-      name,
+    const player = await new Player({
+      ...new_player,
       game_id: game._id,
-    });
+    }).save();
 
-    const new_player = await player.save();
     await Game.findOneAndUpdate(
       { _id: game._id },
-      { players: [...game.players, new_player._id] }
+      { players: [...game.players, player._id] }
     );
 
+    const gameWithPlayers = await Game.findById(game._id)
+      .populate({ path: "players", model: "Player" })
+      .exec();
+
     return {
-      game: await Game.findById(game._id)
-        .populate({ path: "players", model: "Player" })
-        .exec(),
-      player: new_player,
+      game: gameWithPlayers,
+      player,
     };
   },
 
@@ -47,5 +47,10 @@ export default {
     );
 
     return await Player.deleteOne({ _id });
+  },
+
+  getPlayer: async (_id) => {
+    const player = await Player.findOne({ _id });
+    return player;
   },
 };

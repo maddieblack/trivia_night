@@ -11,8 +11,7 @@ export const HomePage = () => {
   const { updateGame } = useContext(GameContext);
   const router = useRouter();
 
-  useSocketListener("game:create:success", (payload) => {
-    updateGame(payload);
+  useSocketListener("game:create:success", () => {
     router.push("/game");
   });
 
