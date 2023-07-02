@@ -17,9 +17,12 @@ export default {
     return await game.save();
   },
   updateGame: async (game) => {
-    return await Game.findOneAndUpdate({ _id: game._id }, { ...game })
+    const newGame = await Game.findOneAndUpdate({ _id: game._id }, { ...game })
       .populate({ path: "players", model: "Player" })
       .exec();
+
+    console.log("QUERY", { newGame });
+    return newGame;
   },
   getGame: async (_id) => {
     return await Game.findOne({ _id })

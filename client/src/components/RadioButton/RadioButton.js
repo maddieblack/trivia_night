@@ -8,7 +8,7 @@ export const RadioButton = ({
   ...rest
 }) => {
   return (
-    <label className="p-5 bg-white rounded flex justify-between gap-5 font-korinna text-2xl w-96 border-2 border-transparent hover:border-amber-500 ">
+    <label className="p-5 bg-white rounded flex justify-between items-center gap-5 font-korinna text-2xl min-w-96 border-2 border-transparent hover:border-amber-500 tv:text-7xl tv:p-12 tv:min-w-[900px] tv:rounded-2xl ">
       {label}
       <input
         className={`appearance-none ${className}`}
@@ -17,7 +17,10 @@ export const RadioButton = ({
       />
       <div>
         {checked && (
-          <FontAwesomeIcon className="text-amber-500" icon={faGavel} />
+          <FontAwesomeIcon
+            className="text-amber-500 text-2xl tv:text-6xl"
+            icon={faGavel}
+          />
         )}
       </div>
     </label>

@@ -4,8 +4,10 @@ import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
-import { useSocketListener } from "@/components/hooks/useSocketListener";
-import { useSocketEvent } from "@/components/hooks/useSocketEvent";
+import {
+  useSocketListener,
+  useSocketEvent,
+} from "@/components/hooks/useSocket";
 import { PlayerContext } from "@/context/PlayerProvider";
 
 const Player = () => {
@@ -21,7 +23,6 @@ const Player = () => {
   });
 
   useSocketListener("game:start:success", (payload) => {
-    console.log("GAME START");
     router.push(`/game/${payload.room_code}`);
   });
 
@@ -49,12 +50,11 @@ const Player = () => {
           </div>
         )}
       </div>
-      <h1 className="text-white font-korinna text-5xl md:text-7xl p-12 text-center">
+      <h1 className="text-white font-korinna text-4xl px-6 mt-20 text-center">
         {saved === true
           ? `Hold tight, ${name}, other players are still joining the game.`
           : "Join game"}
       </h1>
-      {player.role === "alex_trebek" && <div>I AM JUDGE</div>}
       <div className="flex flex-col items-center gap-4 mt-4">
         {saved === false && (
           <>

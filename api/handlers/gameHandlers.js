@@ -18,6 +18,7 @@ export default {
         game: new_game,
       });
     } catch (error) {
+      socket.emit("game:create:error", error);
       return console.log(error);
     }
   },
@@ -49,6 +50,8 @@ export default {
       });
       io.to(updatedGame.room_code).emit("game:start:success", updatedGame);
     } catch (err) {
+      io.to(payload.room_code).emit("game:start:error", err);
+
       console.log({ err });
     }
   },
@@ -59,11 +62,24 @@ export default {
 
       socket.join(payload.room_code);
 
-      console.log({ game });
-
       io.to(payload.room_code).emit("game:fetch:success", { game });
     } catch (err) {
+      io.to(payload.room_code).emit("game:fetch:error", err);
+
       console.log(err);
+    }
+  },
+
+  "game:update": async (payload, socket, io) => {
+    console.log({ payload });
+    try {
+      const game = await Queries.updateGame(payload);
+
+      console.log("HANDLER", game);
+
+      io.to(payload.room_code).emit("game:update:success", { game: payload });
+    } catch (err) {
+      io.to(payload.room_code).emit("game:update:error", err);
     }
   },
 };

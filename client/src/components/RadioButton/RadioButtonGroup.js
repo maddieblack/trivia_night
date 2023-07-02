@@ -1,4 +1,4 @@
-import { RadioButton } from "@/components/RadioButton/RadioButton";
+import { RadioButton } from "@/components/RadioButton";
 
 export const RadioButtonGroup = ({
   options,
@@ -8,7 +8,7 @@ export const RadioButtonGroup = ({
   ...rest
 }) => {
   return (
-    <div className={`flex flex-col gap-4 ${className}`} {...rest}>
+    <div className={`flex flex-col gap-4 tv:gap-8 ${className}`} {...rest}>
       {options.map(({ value: v, label }) => (
         <RadioButton
           label={label}

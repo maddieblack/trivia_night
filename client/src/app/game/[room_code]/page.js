@@ -1,30 +1,16 @@
 "use client";
 
-import React, { useContext, useEffect } from "react";
-import { GameContext } from "@/context/GameProvider";
-import isEmpty from "lodash/isEmpty";
-import { PlayerContext } from "@/context/PlayerProvider";
-import { useSocketEvent } from "@/components/hooks/useSocketEvent";
+import React, { useContext } from "react";
 import { Board, Host, Player } from "@/screens";
+import { useInitialLoad } from "@/components/hooks/useInitialLoad";
+import { PlayerContext } from "@/context/PlayerProvider";
+import { FullScreenLoader } from "@/components/FullScreenLoader";
 
 export const GameRoom = ({ params }) => {
-  const { game } = useContext(GameContext);
+  const { loading } = useInitialLoad(params.room_code);
   const { player } = useContext(PlayerContext);
 
-  const fetchGame = useSocketEvent("game:fetch");
-  const fetchPlayer = useSocketEvent("player:fetch");
-
-  useEffect(() => {
-    if (isEmpty(game) && isEmpty(player)) {
-      fetchGame({
-        room_code: params.room_code,
-      });
-
-      const id = sessionStorage.getItem(params.room_code);
-
-      fetchPlayer({ _id: id });
-    }
-  }, []);
+  if (loading) return <FullScreenLoader />;
 
   if (player?.role === "board") return <Board />;
   if (player?.role === "alex_trebek") return <Host />;

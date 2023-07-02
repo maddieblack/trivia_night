@@ -1,37 +1,49 @@
 "use client";
 import React, { createContext, useState } from "react";
-import { useSocketListener } from "@/components/hooks/useSocketListener";
+import { useSocket } from "@/components/hooks/useSocket";
 import { itsMe } from "@/utils/itsMe";
 export const PlayerContext = createContext({ player: {}, updatePlayer: null });
 
 export const PlayerProvider = ({ children }) => {
-  const [player, updatePlayer] = useState({});
+  const [player, setPlayer] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const handlers = [setLoading, setError];
 
-  useSocketListener(
-    "player:update:success",
-    ({ player, game: { room_code } }) => {
-      if (itsMe(room_code, player)) {
-        updatePlayer(player);
-      }
-    }
+  useSocket(
+    "player:fetch",
+    ({ player }) => {
+      setPlayer(player);
+    },
+    ...handlers
   );
 
-  useSocketListener(
-    "player:create:success",
+  const updatePlayer = useSocket(
+    "player:update",
     ({ player, game: { room_code } }) => {
       if (itsMe(room_code, player)) {
+        setPlayer(player);
+      }
+    },
+    ...handlers
+  );
+
+  const createPlayer = useSocket(
+    "player:create",
+    ({ player, game: { room_code } }) => {
+      if (itsMe(room_code, player)) {
+        // eslint-disable-next-line no-undef
         sessionStorage.setItem(room_code, player._id);
-        updatePlayer(player);
+        setPlayer(player);
       }
-    }
+    },
+    ...handlers
   );
-
-  useSocketListener("player:fetch:success", ({ player }) => {
-    updatePlayer(player);
-  });
 
   return (
-    <PlayerContext.Provider value={{ player, updatePlayer }}>
+    <PlayerContext.Provider
+      value={{ player, updatePlayer, createPlayer, loading, error }}
+    >
       {children}
     </PlayerContext.Provider>
   );

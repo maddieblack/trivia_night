@@ -1,5 +1,6 @@
 @import url("https://use.typekit.net/pui6lkf.css");
-@import url('https://fonts.cdnfonts.com/css/itc-korinna-std');
+@import url("https://fonts.cdnfonts.com/css/itc-korinna-std");
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -13,7 +14,11 @@
   }
 }
 
+@layer components {
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   font-size: 16px;
+  box-sizing: border-box;
 }

@@ -1,38 +1,33 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
 import { Button } from "@/components/Button";
+import { useSocketListener } from "@/components/hooks/useSocket";
+import { useContext } from "react";
 import { GameContext } from "@/context/GameProvider";
-import { useSocketListener } from "@/components/hooks/useSocketListener";
-import { useSocketEvent } from "@/components/hooks/useSocketEvent";
 
 export const HomePage = () => {
-  const { updateGame } = useContext(GameContext);
   const router = useRouter();
+  const { createGame } = useContext(GameContext);
 
-  useSocketListener("game:create:success", () => {
-    router.push("/game");
+  useSocketListener("game:create:success", (payload) => {
+    router.push(`/lobby/${payload.game.room_code}`);
   });
 
-  const createGame = useSocketEvent("game:create");
-
   return (
-    <div className="flex flex-col items-center justify-center h-screen gap-4">
-      <h1 className="font-gyparody text-white text-7xl md:text-8xl ">
+    <div className="flex flex-col items-center justify-center h-screen gap-4 tv:gap-10 ">
+      <h1 className="font-gyparody text-white text-7xl md:text-8xl tv:text-[12rem]">
         JEOPARDY!
       </h1>
-      <div className="flex flex-col items-center gap-5">
-        <Button
-          className="bg-amber-400 hidden md:block"
-          onClick={() => createGame()}
-        >
-          NEW GAME
-        </Button>
-        <Button className="bg-amber-400" onClick={() => router.push("/player")}>
-          JOIN GAME
-        </Button>
-      </div>
+      <Button
+        className="bg-amber-400 hidden md:block "
+        onClick={() => createGame()}
+      >
+        NEW GAME
+      </Button>
+      <Button className="bg-amber-400" onClick={() => router.push("/player")}>
+        JOIN GAME
+      </Button>
     </div>
   );
 };
