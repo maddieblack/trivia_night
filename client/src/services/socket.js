@@ -6,6 +6,6 @@ const URL =
 
 export const socket = io(URL, { withCredentials: true });
 
-socket.onAny((args) => {
-  console.log("EVENT:", args);
+socket.onAny((event, args) => {
+  console.log("EVENT:", event, args);
 });

@@ -10,28 +10,30 @@ export default {
     const game = new Game({
       room_code,
       players: [],
-      alex_trebek: null,
       questions: null,
     });
 
     return await game.save();
   },
   updateGame: async (game) => {
+    console.log("UPDATE GAME", game);
     const newGame = await Game.findOneAndUpdate({ _id: game._id }, { ...game })
       .populate({ path: "players", model: "Player" })
+      .populate({ path: "logs", model: "Log" })
       .exec();
 
-    console.log("QUERY", { newGame });
     return newGame;
   },
   getGame: async (_id) => {
     return await Game.findOne({ _id })
       .populate({ path: "players", model: "Player" })
+      .populate({ path: "logs", model: "Log" })
       .exec();
   },
   getGameByRoomCode: async (room_code) => {
     return await Game.findOne({ room_code })
       .populate({ path: "players", model: "Player" })
+      .populate({ path: "logs", model: "Log" })
       .exec();
   },
   fetchBoardQuestions: async (is_double_jeopardy = false) => {

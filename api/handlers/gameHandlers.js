@@ -1,4 +1,5 @@
 import Queries from "../queries/index.js";
+import logEvents from "../constants/logEvents.js";
 
 export default {
   "game:create": async (payload, socket, io) => {
@@ -17,9 +18,9 @@ export default {
         player,
         game: new_game,
       });
-    } catch (error) {
-      socket.emit("game:create:error", error);
-      return console.log(error);
+    } catch (err) {
+      console.error(err);
+      socket.emit("game:create:error", err);
     }
   },
 
@@ -29,30 +30,39 @@ export default {
       const doubleJeopardyBoard = await Queries.fetchBoardQuestions(true);
       const finalJeopardyBoard = await Queries.fetchFinalJeopardy();
 
-      const updatedGame = {
+      const contestants = payload.players.filter((p) => p.role !== "player");
+
+      await Queries.createLog(
+        logEvents.INITIALIZE,
+        payload._id,
+        payload.alex_trebek
+      );
+
+      const game = {
         ...payload,
         questions: {
           jeopardy: jeopardyBoard,
           double_jeopardy: doubleJeopardyBoard,
           final_jeopardy: finalJeopardyBoard,
         },
+        has_control: contestants[0]._id,
       };
 
-      await Queries.updateGame(updatedGame);
+      const updated_game = await Queries.updateGame(game);
+
       const updated_player = await Queries.updatePlayer({
         _id: payload.alex_trebek,
         role: "alex_trebek",
       });
 
-      io.to(updatedGame.room_code).emit("player:update:success", {
+      io.to(updated_game.room_code).emit("player:update:success", {
         player: updated_player,
-        game: updatedGame,
+        game: updated_game,
       });
-      io.to(updatedGame.room_code).emit("game:start:success", updatedGame);
+      io.to(updated_game.room_code).emit("game:start:success", updated_game);
     } catch (err) {
+      console.error(err);
       io.to(payload.room_code).emit("game:start:error", err);
-
-      console.log({ err });
     }
   },
 
@@ -64,22 +74,21 @@ export default {
 
       io.to(payload.room_code).emit("game:fetch:success", { game });
     } catch (err) {
-      io.to(payload.room_code).emit("game:fetch:error", err);
-
       console.log(err);
+      io.to(payload.room_code).emit("game:fetch:error", err);
     }
   },
 
-  "game:update": async (payload, socket, io) => {
-    console.log({ payload });
+  "game:update": async ({ game, log }, socket, io) => {
     try {
-      const game = await Queries.updateGame(payload);
+      await Queries.createLog(log.event, game._id, log.player_id);
 
-      console.log("HANDLER", game);
+      const updatedGame = await Queries.updateGame(game);
 
-      io.to(payload.room_code).emit("game:update:success", { game: payload });
+      io.to(game.room_code).emit("game:update:success", { game: updatedGame });
     } catch (err) {
-      io.to(payload.room_code).emit("game:update:error", err);
+      console.error(err);
+      io.to(game.room_code).emit("game:update:error", err);
     }
   },
 };

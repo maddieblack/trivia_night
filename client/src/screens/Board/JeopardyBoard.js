@@ -1,7 +1,7 @@
 import React from "react";
 import { unzip } from "lodash";
 
-export const JeopardyBoard = ({ round, game, updateGame }) => {
+export const JeopardyBoard = ({ round, game }) => {
   const categories = game.questions[round];
 
   const clues = unzip(categories.map((cat) => cat.clues).reverse());

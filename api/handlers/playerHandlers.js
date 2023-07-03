@@ -8,22 +8,23 @@ export default {
 
       socket.join(room_code);
       io.to(room_code).emit("player:create:success", { player, game });
-      io.to(room_code).emit("game:update:success", { game });
-    } catch (error) {
-      return console.log("Error", error);
+    } catch (err) {
+      io.to(room_code).emit("player:create:error", err);
+      console.error(err);
     }
   },
 
   "player:update": async (player, socket, io) => {
+    const game = await Queries.getGame(player.game_id);
     try {
       const updated_player = await Queries.updatePlayer(player);
-      const game = await Queries.getGame(player.game_id);
 
       io.to(game.room_code).emit("player:update:success", {
         player: updated_player,
         game,
       });
     } catch (err) {
+      io.to(game.room_code).emit("player:create:error", err);
       console.error(err);
     }
   },
@@ -38,7 +39,8 @@ export default {
 
       io.to(room_code).emit("player:delete:success", game);
     } catch (err) {
-      console.log(err);
+      io.to(room_code).emit("player:delete:error", err);
+      console.error(err);
     }
   },
   "player:fetch": async ({ _id }, socket) => {
@@ -46,7 +48,8 @@ export default {
       const player = await Queries.getPlayer(_id);
       socket.emit("player:fetch:success", { player });
     } catch (err) {
-      console.log(err);
+      socket.emit("player:fetch:error", err);
+      console.error(err);
     }
   },
 };

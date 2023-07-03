@@ -1,5 +1,4 @@
-export const events = {
+export default {
   INITIALIZE: "INITIALIZE",
   HERE_ARE_THE_CATEGORIES_J: "HERE_ARE_THE_CATEGORIES_J",
-  JEOPARDY_BOARD: "JEOPARDY_BOARD",
 };

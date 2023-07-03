@@ -3,10 +3,7 @@ import { Player } from "../models/player.js";
 
 export default {
   newPlayer: async (new_player) => {
-    console.log({ new_player });
     const game = await Game.findOne({ room_code: new_player.room_code });
-
-    console.log(game);
 
     const player = await new Player({
       ...new_player,

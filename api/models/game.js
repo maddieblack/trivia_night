@@ -11,10 +11,6 @@ const GameSchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
       },
     ],
-    alex_trebek: {
-      type: String,
-      default: null,
-    },
     questions: {
       jeopardy: [{ type: Object }],
       double_jeopardy: [{ type: Object }],
@@ -24,10 +20,14 @@ const GameSchema = new mongoose.Schema(
         },
       ],
     },
-    step: {
-      type: String,
-      default: "INITIAL",
-      required: true,
+    logs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+      },
+    ],
+    has_control: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
     },
   },
   { timestamps: true }

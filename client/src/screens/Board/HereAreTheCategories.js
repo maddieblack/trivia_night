@@ -1,12 +1,14 @@
 /* eslint-disable no-undef */
 
-import React, { useEffect, useState } from "react";
-import { steps } from "@/constants";
+import React, { useContext, useEffect, useState } from "react";
+import { events } from "@/constants";
+import { PlayerContext } from "@/context/PlayerProvider";
 
 export const HereAreTheCategories = ({
   game,
   updateGame,
   round = "jeopardy",
+  player,
 }) => {
   let interval;
   const [inSpotlight, setInSpotlight] = useState(0);
@@ -20,7 +22,10 @@ export const HereAreTheCategories = ({
 
     if (inSpotlight === game.questions[round].length) {
       clearInterval(interval);
-      updateGame({ ...game, step: steps.JEOPARDY_BOARD });
+      updateGame({
+        game,
+        log: { event: events.HERE_ARE_THE_CATEGORIES_J, player_id: player._id },
+      });
     }
   };
 
@@ -31,6 +36,8 @@ export const HereAreTheCategories = ({
 
     return () => clearInterval(interval);
   }, [inSpotlight]);
+
+  console.log({ game });
 
   return (
     <div>

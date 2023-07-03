@@ -32,7 +32,7 @@ db.once("open", function () {
 });
 
 io.on("connection", (socket) => {
-  socket.onAny((args) => console.log("EVENT:", args));
+  socket.onAny((event, args) => console.log("EVENT:", event, args));
   registerHandlers(handlers, socket, io);
 });
 

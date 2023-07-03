@@ -6,7 +6,6 @@ import { useRadioButtonGroup } from "@/components/RadioButton/useRadioButtonGrou
 import { useSocketListener } from "@/components/hooks/useSocket";
 import { Button } from "@/components/Button";
 import { RadioButtonGroup } from "@/components/RadioButton";
-import { steps } from "@/constants";
 import { useInitialLoad } from "@/components/hooks/useInitialLoad";
 import { FullScreenLoader } from "@/components/FullScreenLoader";
 
@@ -65,7 +64,6 @@ const Lobby = ({ params }) => {
               startGame({
                 ...game,
                 alex_trebek: judgeValue,
-                step: steps.CATEGORIES_JEOPARDY,
               })
             }
           >
